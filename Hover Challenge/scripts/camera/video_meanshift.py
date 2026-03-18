@@ -1,3 +1,41 @@
+'''
+Meanshift tracking on video - also known as mode-seeking.
+
+====
+What is meanshift?
+
+Unsupervised learning algorithm.
+Mode : Highest density of data points in the region.
+
+Non-parametric, density-based clustering algorithm.
+Iteratively shifts data towards the mode until convergence at local maximum of density function.
+Used for Datasets that have arbitrary shapes + not well seperated by linear boundaries
+Unlike K-means, does not require specific number of clusters in advance,
+number of clusters is determined by the algorithm based on the data.
+
+The process of mean-shift clustering algorithm can be summarized as follows:
+
+Initialize the data points as cluster centroids.
+Repeat the following steps until convergence or a maximum number of iterations is reached:
+For each data point, calculate the mean of all points within a certain radius (i.e., the "kernel") centered at the data point.
+Shift the data point to the mean.
+Identify the cluster centroids as the points that have not moved after convergence.
+Return the final cluster centroids and the assignments of data points to clusters.
+
+Suitability
+----------
+Mean shift is expensive - O(n^2).In our case, the number of clusters is known (there are 4 LED lights to be tracked.)
+This could lead to false positives (though it is robust to outliers)
+ Unsure if it is a suitable algo for the task.
+Needs to be tested against other alternatives.
+
+
+Based on code found at:
+https://docs.opencv.org/4.x/d7/d00/tutorial_meanshift.html
+https://github.com/opencv/opencv/blob/4.x/samples/cpp/tutorial_code/video/meanshift/meanshift.cpp
+https://www.bogotobogo.com/python/OpenCV_Python/images/mean_shift_tracking/slow_traffic_small.mp4
+'''
+
 import numpy as np
 import cv2 as cv
 import argparse

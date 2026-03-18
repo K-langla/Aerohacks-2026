@@ -1,5 +1,44 @@
 
 '''
+This is the computer vision portion of McGill Aerohacks 2026 drone challenge.
+The goal was to identify the LEDs on the drones (4 LEDS, 1 white, 1 green, 1 red, and 1 blue)
+and use that information to correct the drone hover, accounting for transmission delays and
+low battery capacity.
+
+Equipment provided:
+    2 Logitech 'Brio 101' cameras (USB connection)
+    1 ESP- 32 drone
+        - 4 LEDs (1 white, 1 green, 1 red, 1 blue)
+        - Wifi connection
+
+Goal:
+
+    -Use computer vision to:
+        - Detect LED Lights with minimal noise (SUCCESS- See threshold.run_threshold)
+        - Track LED lights reliably (Camshift implemented, working for face detection, but not tested on LED data)
+        - Use the LED light data to counter turbulance during autonomous hover (No attempt made- Time limit reached)
+
+Challenges:
+
+    -Not all 4 LED's are always on.
+    -The white LED contains all 3 colours.
+    -No point of reference inside the box to use to augment/facilitate calculations
+    -Time constraints, limited access to drone unit.
+    -Drone inside cage surrounded by plastic sheets that reflect light and diffuse some of the LED light
+
+
+=================
+Part 1:
+Isolating LED lights using Brio 101 cameras
+
+Camera Detection: setup_cameras.py
+
+=================
+Experimenting with mean-shift based traking:
+Found in run_camshift
+App(video_src1, video_src2).run_camshift()
+
+References:
 Camshift tracker from https://github.com/opencv/opencv/blob/3.4/samples/python/camshift.py
 ================
 
@@ -19,6 +58,10 @@ Keys:
 -----
     ESC   - exit
     b     - toggle back-projected probability visualization
+
+Author
+-----
+Kelly Langlais, 2026
 '''
 
 # Python 2/3 compatibility
@@ -39,6 +82,8 @@ import argparse
 import video
 import threshold
 import setup_cameras
+
+from constants import PROJECT_DIR, DATA_DIR, RED_LOW_HSV,RED_HIGH_HSV,BLUE_LOW_HSV,BLUE_HIGH_HSV, GREEN_LOW_HSV,GREEN_HIGH_HSV
 
 class Camera(object):
     def __init__(self, name, video_src):
@@ -219,73 +264,50 @@ if __name__ == '__main__':
     print(__doc__)
     import sys
     cameras = setup_cameras.get_available_cameras()
-    print(cameras)
-    #vid_path = "C:\\Users\\Manhands\\Documents\\Comp Sci\\McGill Aerohacks\\"
-    vid_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))+"\\data\\"
-    print( "video dir: " +vid_path)
+    #Test print
+    #print(cameras)
+
+    vid_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))+ DATA_DIR
+    # Test print
+    #print( "video dir: " +vid_path)
+
     #vid_1 = "drone video long.mp4"
     #vid_2 = "drone video short.mp4"
     vid_1 = "drone cam 1.mp4"
     vid_2 = "drone cam 2.mp4"
 
-    '''
-    print("Enter video capture mode: \n [1] Video(default)\n [2] Live camera feed")
-    input = input().lower()
-    video = "video"
-    camera = "camera"
-   
-    if video in input or "1" in input or len(cameras) == 0:
-        print("Video selected")
-        try:
-            video_src1 = sys.argv[1]
-        except:
-            video_src1 = 0|vid_path + vid_1
-        try:
-            video_src2 = 1|sys.argv[2]
-        except:
-            video_src2 = vid_path + vid_2
-        App(video_src1, video_src2).run()
-    else:
-
-        if camera in input or "2" in input:
-            print("Camera selected")
-        else:
-            print("Input not recognised, using default (Video)")
-
-        try:
-            video_src1 = sys.argv[1]
-        except:
-            video_src1 = cameras[0]
-        try:
-            video_src2 = sys.argv[2]
-        except:
-            video_src2 = cameras[0]
-        App(video_src1, video_src2).run()
+    small_clip1 = "Small clip 1.mp4"
+    blue_LED_clip = "Blue LED clips.mp4"
 
 
-    '''
+    #Caution : No error checking for video src - will fail if no cameras detected
+
     try:
-        video_src1 = sys.argv[1]
+        video_src1 = sys.argv[1] #can pass sys.argv, i dont but i left as is
     except:
-        #video_src1 = cameras[0]
-        video_src1 = vid_path + vid_1
+        #video_src1 = cameras[0] #Uncomment to use live video feed from a Brio Webcam
+        #video_src1 = vid_path + vid_1 #Uncomment to use video of the drone for testing
+        #video_src1 = vid_path + small_clip1 #uncomment for short video with 3/4 leds
+        video_src1 = vid_path + blue_LED_clip #uncomment for short video with blue LED
     try:
-        video_src2 = sys.argv[2]
+        video_src2 = sys.argv[2] #can pass sys.argv, i dont but i left as is
     except:
-        #video_src2 = cameras[0]
-        video_src2 = vid_path + vid_2
-    
-    #App(video_src1, video_src2).run_camshift()
 
-    #threshold.run_threshold_tester(video_src1)
-    red_low_hsv =(0, 148, 135)
-    red_high_hsv = (10, 255, 255)
-    # low_H:100, low_S:54, low_V :0
-    # high_H:140, high_S:255, high_V:255
-    blue_low_hsv =(100, 54, 0)
-    blue_high_hsv = (140, 255, 255)
+        #video_src2 = cameras[1] #Uncomment to use live video feed from a second Brio Webcam
+        video_src2 = vid_path + vid_2 #Uncomment to use video of the drone for testing
 
-    threshold.run_threshold(video_src1, "red", red_low_hsv,red_high_hsv)
-    threshold.run_threshold(video_src1,"blue", blue_low_hsv,blue_high_hsv)
+
+    #App(video_src1, video_src2).run_camshift() #Uncomment for Camshift tracking
+
+    #threshold.run_threshold_tester(video_src1) #Uncomment to test HSV levels on video
+
+
+
+
+    #Uncomment these to see filter on video
+    #threshold.run_threshold(video_src1, "red", RED_LOW_HSV,RED_HIGH_HSV)
+    #threshold.run_threshold(video_src1,"blue", BLUE_LOW_HSV,BLUE_HIGH_HSV)
+    threshold.run_threshold(video_src1, "green", GREEN_LOW_HSV, GREEN_HIGH_HSV)
+
 
 

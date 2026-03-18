@@ -1,6 +1,6 @@
-#file too large
-data/drone cam 1.mp4
-data/drone cam 2.mp4
+#files too large
+data/
+
 
 # Python
 __pycache__/
@@ -28,5 +28,6 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
-Hover Challenge/data/drone cam 1.mp4
-Hover Challenge/data/drone cam 2.mp4
+
+
+

@@ -1,7 +1,11 @@
 '''
+Experimenting with LED detection techniques
+
+
+References:
+
 https://github.com/jlengrand/image_processing/blob/master/LedDetector/data/output/2200.jpg
 Created on 25 mai 2012
-
 @author: jlengrand
 '''
 # Python 2/3 compatibility

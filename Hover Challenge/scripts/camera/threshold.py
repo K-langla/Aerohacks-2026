@@ -1,13 +1,21 @@
-from __future__ import print_function
-import cv2 as cv
-import argparse
-import setup_cameras
-import video
 '''
+Method for applying HSV filter to video
+HSV = Hue, Saturation, Value
+Can use sliders to adjust low and high values to visualise output.
+
+The max values for S and V is 255, but the max value for the hue in OpenCV is 180 not 360
+
+Based on code found at:
+https://docs.opencv.org/4.x/da/d97/tutorial_threshold_inRange.html
+https://github.com/opencv/opencv/blob/4.x/samples/cpp/tutorial_code/ImgProc/Threshold_inRange.cpp
+Original author: 	Lorena García
+Compatibility: 	Rishiraj Surti
+
+====
 What is HSV Color Space?
 
-The HSV color space represents colors in a way that's more aligned with human perception. 
-Unlike the RGB color space, which mixes red, green, and blue light, HSV separates hue (the type of color) from saturation (color intensity) 
+The HSV color space represents colors in a way that's more aligned with human perception.
+Unlike the RGB color space, which mixes red, green, and blue light, HSV separates hue (the type of color) from saturation (color intensity)
 and value (brightness). This separation helps isolate colors more effectively, especially under different lighting conditions.
 hue = 0 : Red
 hue = 120 : Green
@@ -15,7 +23,24 @@ hue = 240 : Blue
 
 HSV 0 0 0 : Black
 HSV 0 0 100% : White
+
+
+Keys:
+-----
+    ESC   - exit
+
+Additional references:
+--------
+https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
+
 '''
+
+from __future__ import print_function
+import cv2 as cv
+import argparse
+import setup_cameras
+import video
+
 max_value = 255 #max value for saturation
 max_value_H = 360 // 2 #the type of color, ranging from 0° to 179° in OpenCV (as opposed to 0° to 360°)
 low_H = 0
@@ -83,19 +108,11 @@ def on_high_V_thresh_trackbar(val):
 
 
 def run_threshold_tester(video_src):
+    '''
+    Use this method to use sliders to adjust HSV while video is playing
 
-#parser = argparse.ArgumentParser(description='Code for Thresholding Operations using inRange tutorial.')
-#parser.add_argument('--camera', help='Camera divide number.', default=0, type=int)
-#args = parser.parse_args()
-
+    '''
     cap = video.create_capture(video_src, fallback = None)
-
-    # self.camera1 = 'camera1'
-
-    # _ret1, self.frame1 = self.cam_feed1.read()
-
-    # cv.namedWindow(self.camera1)
-    # cv.setMouseCallback(self.camera1, self.onmouse)
 
     cv.namedWindow(window_capture_name)
     cv.namedWindow(window_detection_name)
@@ -136,8 +153,10 @@ def run_threshold_tester(video_src):
     # high_H:10, high_S:255, high_V:255
 
 def run_threshold(video_src, colour_name, low_hsv , high_hsv):
-    #low_hsv = (low_H, low_S, low_V)
-    #high_hsv = (high_H, high_S, high_V)
+    '''
+    Use this method to visualise a threshold on a video feed.
+    '''
+
     cap = video.create_capture(video_src, fallback = None)
     cv.namedWindow(window_capture_name+ " " + colour_name.upper())
     cv.namedWindow(window_detection_name)
@@ -150,9 +169,7 @@ def run_threshold(video_src, colour_name, low_hsv , high_hsv):
             break
 
         frame_HSV = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
-        # HSV = Hue saturation value
-        #red
-        #frame_threshold = cv.inRange(frame_HSV, (0, 148, 135), (10, 255, 255))
+
         frame_threshold = cv.inRange(frame_HSV, low_hsv, high_hsv)
 
         cv.imshow(window_capture_name, frame)
@@ -160,5 +177,4 @@ def run_threshold(video_src, colour_name, low_hsv , high_hsv):
         key = cv.waitKey(30)
         if key == ord('q') or key == 27:
             break
-            # low_H:0, low_S:51, low_V :180
-            # high_H:0, high_S:255, high_V:255
+
