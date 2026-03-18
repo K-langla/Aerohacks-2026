@@ -1,4 +1,7 @@
-"""Quick integration test — verifies all components instantiate and work together."""
+"""
+TODO: IS THIS USED ANYWHERE? OTHERWISE DELETE
+
+Quick integration test — verifies all components instantiate and work together."""
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 

@@ -1,4 +1,9 @@
-"""Quick test to verify all graduated safety zones work correctly."""
+"""
+
+TODO: IS THIS USED ANYWHERE? OTHERWISE DELETE
+
+
+Quick test to verify all graduated safety zones work correctly."""
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
