@@ -61,7 +61,7 @@ Keys:
 
 Author
 -----
-Kelly Langlais, 2026
+Kelly L, 2026
 '''
 
 # Python 2/3 compatibility
@@ -76,14 +76,11 @@ if PY3:
 import numpy as np
 import cv2 as cv
 
-import argparse
-
 # local module
 import video
 import threshold
-import setup_cameras
 
-from constants import PROJECT_DIR, DATA_DIR, RED_LOW_HSV,RED_HIGH_HSV,BLUE_LOW_HSV,BLUE_HIGH_HSV, GREEN_LOW_HSV,GREEN_HIGH_HSV
+from constants import DATA_DIR, GREEN_LOW_HSV,GREEN_HIGH_HSV
 
 class Camera(object):
     def __init__(self, name, video_src):
@@ -263,7 +260,7 @@ class App(object):
 if __name__ == '__main__':
     print(__doc__)
     import sys
-    cameras = setup_cameras.get_available_cameras()
+    cameras = video.get_available_cameras()
     #Test print
     #print(cameras)
 

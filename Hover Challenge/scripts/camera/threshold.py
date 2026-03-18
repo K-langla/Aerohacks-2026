@@ -37,8 +37,6 @@ https://docs.opencv.org/3.4/d7/d4d/tutorial_py_thresholding.html
 
 from __future__ import print_function
 import cv2 as cv
-import argparse
-import setup_cameras
 import video
 
 max_value = 255 #max value for saturation
